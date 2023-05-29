@@ -6,7 +6,7 @@ from executor import run_command
 
 
 #Changed to work with the makefile
-executables = [{'compile_command': "make icccomplete", 'name': "stencil-complete-icc.exe", 'args' : ['{artifacts_path}/input_64_512_960.dat', '{artifacts_path}/kernel_5.dat', '{artifacts_path}/output_64_512_960x5.dat']}]
+executables = [{'compile_command': "make iccserial", 'name': "stencil-omp-icc.exe", 'args' : ['{artifacts_path}/input_64_512_960.dat', '{artifacts_path}/kernel_5.dat', '{artifacts_path}/output_64_512_960x5.dat']}]
 
 #Compiles based on the executable
 def compile(basedir, artifacts_path):
@@ -33,27 +33,27 @@ def compile(basedir, artifacts_path):
     return successful_compilations
 
 #Sets up running the single instance runner. Indirectly linked to sine-instance-runner.py
-def submit_job_for_run(exe, num_par, identifier, artifacts_path, basedir):
+def submit_job_for_run(exe, threads, identifier, artifacts_path, basedir):
     print("Here?")
     args = [x.format_map({'artifacts_path': artifacts_path}) for x in exe["args"]]
     results_file_name = os.path.join(basedir, "iresults.csv")
     command_to_run = ["python", os.path.join(artifacts_path, "single-instance-runner.py")]
-    command_to_run += ["--num-par", str(num_par)]
+    command_to_run += ["--num-par", str(threads)]
     command_to_run += ["--identifier", str(identifier)]
     command_to_run += ["--results-file", results_file_name]
     command_to_run += ["--basedir", basedir]
     command_to_run += ["--executable", exe["full_path"]]
     command_to_run += ["--args", ",".join(args)]
-    command_to_run += ["--parallel", "MPI"]
+    command_to_run += ["--parallel", "OpenMP"]
 
     command_to_run = " ".join(command_to_run)
     cleanup_command = "rm %s" % args[-1]
 
     slurm_template = os.path.join(artifacts_path, "slurm_template.tpl")
-    job_name = "%s_%s_%s" % (str(identifier), exe["name"], str(num_par))
+    job_name = "%s_%s_%s" % (str(identifier), exe["name"], str(threads))
 
     return submit_slurm_job([command_to_run, cleanup_command], slurm_template, cwd=basedir,
-                            time_limit=60, num_cores=1, num_tasks=num_par, job_name=job_name)
+                            time_limit=60, num_cores=threads, num_tasks=1, job_name=job_name)
 
 def submit_cleanup_job(basedir, identifier, artifacts_path, dependencies):
     command_to_run = ["python", os.path.join(artifacts_path, "cleanup-user.py")]
@@ -82,17 +82,17 @@ def run(basedir, identifier, artifacts_path):
     
     executables = compile(basedir, artifacts_path)
 
-    max_ranks = 33
-    rank_nums = []
-    ranknum = 1
-    while ranknum < max_ranks:
-        rank_nums.append(ranknum)
-        ranknum *= 2
-    rank_nums = list(reversed(rank_nums))
+    max_threads = 33
+    thread_nums = []
+    threadnum = 1
+    while threadnum < max_threads:
+        thread_nums.append(threadnum)
+        threadnum *= 2
+    thread_nums = list(reversed(thread_nums))
 
     job_ids = []
     for e in executables:
-        for c in rank_nums:
+        for c in thread_nums:
             job_id = submit_job_for_run(e, c, identifier, artifacts_path, basedir)
             print(job_id)
             job_ids.append(job_id)

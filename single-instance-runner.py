@@ -36,6 +36,7 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
         e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
     else:
         num_threads = num_par
+        num_par = None
 
     runtime = run_executable(e_full_path, args, num_threads, num_runs=3, capture_output=False)
 
@@ -45,10 +46,12 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
     
     results_to_write = {'id': identifier, 'executable': executable, 'num_par': num_par,
                         'runtime': runtime}
+    
     write_results(results_to_write,
                   lambda x: (x['id'] == str(identifier) and
                              x['executable'] == str(executable) and
-                             x['num_par'] == str(num_par)),
+                             x['num_par'] == str(num_par) and 
+                             x['threads'] == str(num_threads)),
                   results_file)
 
 
