@@ -31,28 +31,47 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
 
     e_full_path = os.path.join(basedir, executable)
     args = args.split(",")
-    num_threads = None
+    num_threads = 1
     if parallel == "MPI":
         e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
     else:
         num_threads = num_par
-        num_par = None
+        num_par = 1
 
-    runtime = run_executable(e_full_path, args, num_threads, num_runs=3, capture_output=False)
+    resultsDone = False
+    threadValue = None
+    parValue = None
+    with open(results_file, 'r') as file:
+         results = csv.DictReader(file)
 
-    if runtime is None:
-        print("Provided command is erroring out. Timings are meaningless. Moving on...")
-        sys.exit(-1)
+         for row in results:
+             threadValue = row['num_threads']
+             parValue = row['num_par']
+             if threadValue != 1:
+                 if threadValue == num_threads:
+                     results_done = True
+             if parValue != 1:
+                 if parValue == num_par
+                     results_done = True
+     
+    if resultsDone == True:
+        print("Results already calculated, starting new job")
+    else:
+        runtime = run_executable(e_full_path, args, num_threads, num_runs=3, capture_output=False)
+
+        if runtime is None:
+            print("Provided command is erroring out. Timings are meaningless. Moving on...")
+            sys.exit(-1)
     
-    results_to_write = {'id': identifier, 'executable': executable, 'num_par': num_par,
+        results_to_write = {'id': identifier, 'executable': executable, 'num_par': num_par, 'num_threads': num_threads,
                         'runtime': runtime}
     
-    write_results(results_to_write,
-                  lambda x: (x['id'] == str(identifier) and
-                             x['executable'] == str(executable) and
-                             x['num_par'] == str(num_par) and 
-                             x['threads'] == str(num_threads)),
-                  results_file)
+        write_results(results_to_write,
+                      lambda x: (x['id'] == str(identifier) and
+                                 x['executable'] == str(executable) and
+                                 x['num_par'] == str(num_par) and 
+                                 x['threads'] == str(num_threads)),
+                      results_file)
 
 
 if __name__=="__main__":
