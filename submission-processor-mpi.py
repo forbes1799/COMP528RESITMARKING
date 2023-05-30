@@ -46,7 +46,7 @@ def submit_job_for_run(exe, num_par, identifier, artifacts_path, basedir):
             results = csv.DictReader(file)
             for row in results:
                 parValue = row['num_par']
-		print("parValue", parValue)
+                print("parValue", parValue)
                 if parValue == num_par:
                     resultsDone = True
     except FileNotFoundError:
