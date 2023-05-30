@@ -24,20 +24,7 @@ from executor import run_executable
               required=True, help='Which kind of parallelism to use (OpenMP/MPI)')
 @click.option('--args', default=None, help='(Optional) Arguments for executable')
 def run(basedir, executable, identifier, results_file, num_par, parallel, args):
-    all_data = []
-
-    if basedir is None:
-        basedir = "."
-
-    e_full_path = os.path.join(basedir, executable)
-    args = args.split(",")
-    num_threads = 1
-    if parallel == "MPI":
-        e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
-    else:
-        num_threads = num_par
-        num_par = 1
-
+  
     resultsDone = False
     threadValue = None
     parValue = None
@@ -55,11 +42,26 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
              if parValue != 1:
                  if parValue == num_par:
                      results_done = True
+    all_data = []
+
+    if basedir is None:
+        basedir = "."
+
+    e_full_path = os.path.join(basedir, executable)
+    args = args.split(",")
+    num_threads = 1
+    if parallel == "MPI":
+        e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
+    else:
+        num_threads = num_par
+        num_par = 1
+
+    
      
     if resultsDone == True:
         print("Results already calculated, starting new job")
     else:
-        runtime = run_executable(e_full_path, args, num_threads, num_runs=3, capture_output=False)
+        runtime = run_executable(e_full_path, args, num_threads, num_runs=2, capture_output=False)
 
         if runtime is None:
             print("Provided command is erroring out. Timings are meaningless. Moving on...")
