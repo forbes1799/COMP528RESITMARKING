@@ -24,7 +24,7 @@ from executor import run_executable
               required=True, help='Which kind of parallelism to use (OpenMP/MPI)')
 @click.option('--args', default=None, help='(Optional) Arguments for executable')
 def run(basedir, executable, identifier, results_file, num_par, parallel, args):
-  
+    print(results_file)
     resultsDone = False
     threadValue = None
     parValue = None
@@ -35,7 +35,9 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
 
          for row in results:
              threadValue = row['num_threads']
+             print("threadValue:", threadValue)
              parValue = row['num_par']
+             print("parValue:", parValue)
              if threadValue != 1:
                  if threadValue == num_threads:
                      results_done = True
