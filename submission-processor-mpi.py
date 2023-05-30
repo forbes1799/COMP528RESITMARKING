@@ -45,12 +45,14 @@ def submit_job_for_run(exe, num_par, identifier, artifacts_path, basedir):
         with open(results_file_name, 'r') as file:
             results = csv.DictReader(file)
             for row in results:
-                parValue = row['num_par']
-                print("parValue", parValue)
-                if parValue == num_par:
+                parValue = int(row['num_par'])
+                exeName = row['executable']
+                print("exe", exeName, "parValue", parValue)
+                if exeName == exe["full_path"] and parValue == num_par:
                     resultsDone = True
     except FileNotFoundError:
         print("File does not exist")
+    print(resultsDone)
 
     command_to_run = ["python", os.path.join(artifacts_path, "single-instance-runner.py")]
     command_to_run += ["--num-par", str(num_par)]
@@ -112,8 +114,10 @@ def run(basedir, identifier, artifacts_path):
             job_id = submit_job_for_run(e, c, identifier, artifacts_path, basedir)
             print(job_id)
             job_ids.append(job_id)
-    if len(job_ids)>0:
-        print(submit_cleanup_job(basedir, identifier, artifacts_path, job_ids))
+    print(job_ids)
+    for j in job_ids:
+    	if j != None:
+            print(submit_cleanup_job(basedir, identifier, artifacts_path, job_ids))
 
 
 if __name__=="__main__":

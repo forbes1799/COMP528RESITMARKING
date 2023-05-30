@@ -46,9 +46,10 @@ def submit_job_for_run(exe, threads, identifier, artifacts_path, basedir):
         with open(results_file_name, 'r') as file:
             results = csv.DictReader(file)
             for row in results:
-                threadValue = row['num_threads']
+                threadValue = int(row['num_threads'])
+                exeName = row['executable']
                 print("threadValue", threadValue)
-                if threadValue == threads:
+                if exeName == exe["full_path"] and threadValue == threads:
                     resultsDone = True
     except FileNotFoundError:
         print("File not found")
@@ -68,6 +69,8 @@ def submit_job_for_run(exe, threads, identifier, artifacts_path, basedir):
     slurm_template = os.path.join(artifacts_path, "slurm_template.tpl")
     job_name = "%s_%s_%s" % (str(identifier), exe["name"], str(threads))
     
+    print(resultsDone)
+
     if resultsDone == False:
         return submit_slurm_job([command_to_run, cleanup_command], slurm_template, cwd=basedir,
                                 time_limit=60, num_cores=threads, num_tasks=1, job_name=job_name)
@@ -113,8 +116,9 @@ def run(basedir, identifier, artifacts_path):
             job_id = submit_job_for_run(e, c, identifier, artifacts_path, basedir)
             print(job_id)
             job_ids.append(job_id)
-    if len(job_ids)>0:
-        print(submit_cleanup_job(basedir, identifier, artifacts_path, job_ids))
+    for j in job_ids:
+    	if j != None:
+        	print(submit_cleanup_job(basedir, identifier, artifacts_path, job_ids))
 
 
 if __name__=="__main__":
