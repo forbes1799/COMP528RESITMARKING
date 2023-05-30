@@ -24,6 +24,21 @@ from executor import run_executable
               required=True, help='Which kind of parallelism to use (OpenMP/MPI)')
 @click.option('--args', default=None, help='(Optional) Arguments for executable')
 def run(basedir, executable, identifier, results_file, num_par, parallel, args):
+    
+    all_data = []
+
+    if basedir is None:
+        basedir = "."
+
+    e_full_path = os.path.join(basedir, executable)
+    args = args.split(",")
+    num_threads = 1
+    if parallel == "MPI":
+        e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
+    else:
+        num_threads = num_par
+        num_par = 1
+        
     print(results_file)
     resultsDone = False
     threadValue = None
@@ -44,19 +59,6 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
              if parValue != 1:
                  if parValue == num_par:
                      results_done = True
-    all_data = []
-
-    if basedir is None:
-        basedir = "."
-
-    e_full_path = os.path.join(basedir, executable)
-    args = args.split(",")
-    num_threads = 1
-    if parallel == "MPI":
-        e_full_path = "mpirun -np %d %s" % (num_par, e_full_path)
-    else:
-        num_threads = num_par
-        num_par = 1
 
     
      
