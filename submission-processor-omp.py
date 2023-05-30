@@ -1,6 +1,7 @@
 import click
 import pathlib
 import os
+import csv
 from slurm import submit_slurm_job
 from executor import run_command
 
