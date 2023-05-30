@@ -40,13 +40,17 @@ def submit_job_for_run(exe, num_par, identifier, artifacts_path, basedir):
 
     parValue = None
     resultsDone = False    
-
-    with open(results_file_name, 'r') as file:
-        results = csv.DictReader(file)
-        for row in results:
-            parValue = row['num_par']
-            if parValue == num_par:
-                resultsDone = True
+    print("num_par", num_par)
+    try:
+        with open(results_file_name, 'r') as file:
+            results = csv.DictReader(file)
+            for row in results:
+                parValue = row['num_par']
+	        print("parValue", parValue)
+                if parValue == num_par:
+                    resultsDone = True
+    except FileNotFoundError:
+	print("File does not exist")
 
     command_to_run = ["python", os.path.join(artifacts_path, "single-instance-runner.py")]
     command_to_run += ["--num-par", str(num_par)]
