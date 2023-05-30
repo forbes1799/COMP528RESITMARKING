@@ -51,7 +51,7 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
                  if threadValue == num_threads:
                      results_done = True
              if parValue != 1:
-                 if parValue == num_par
+                 if parValue == num_par:
                      results_done = True
      
     if resultsDone == True:
