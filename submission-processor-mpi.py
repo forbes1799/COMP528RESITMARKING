@@ -41,7 +41,7 @@ def submit_job_for_run(exe, num_par, identifier, artifacts_path, basedir):
     parValue = None
     resultsDone = False    
 
-    with open(results_file_name) 'r' as file:
+    with open(results_file_name, 'r') as file:
         results = csv.DictReader(file)
         for row in results:
             parValue = row['num_par']
