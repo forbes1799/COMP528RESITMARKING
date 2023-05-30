@@ -42,7 +42,7 @@ def submit_job_for_run(exe, threads, identifier, artifacts_path, basedir):
     threadValue = None
     resultsDone = False    
 
-    with open(results_file_name) 'r' as file:
+    with open(results_file_name, 'r') as file:
         results = csv.DictReader(file)
         for row in results:
             threadValue = row['num_threads']
