@@ -39,50 +39,21 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
         num_threads = num_par
         num_par = 1
         
-    print(results_file)
-    resultsDone = False
-    threadValue = None
-    parValue = None
-    
-    print("Running with", num_threads, "threads and", num_par, "parallel processes")
-    try:
-        with open(results_file, 'r') as file:
-            results = csv.DictReader(file)
+    runtime = run_executable(e_full_path, args, num_threads, num_runs=2, capture_output=False)
 
-            for row in results:
-                threadValue = row['num_threads']
-                print("threadValue:", threadValue)
-                parValue = row['num_par']
-                print("parValue:", parValue)
-                if threadValue != 1:
-                    if threadValue == num_threads:
-                        results_done = True
-                if parValue != 1:
-                    if parValue == num_par:
-                        results_done = True
-     except FileNotFoundError:
-       print("File does not exist")
-
+    if runtime is None:
+        print("Provided command is erroring out. Timings are meaningless. Moving on...")
+        sys.exit(-1)
     
-     
-    if resultsDone == True:
-        print("Results already calculated, starting new job")
-    else:
-        runtime = run_executable(e_full_path, args, num_threads, num_runs=2, capture_output=False)
-
-        if runtime is None:
-            print("Provided command is erroring out. Timings are meaningless. Moving on...")
-            sys.exit(-1)
-    
-        results_to_write = {'id': identifier, 'executable': executable, 'num_par': num_par, 'num_threads': num_threads,
+    results_to_write = {'id': identifier, 'executable': executable, 'num_par': num_par, 'num_threads': num_threads,
                         'runtime': runtime}
     
-        write_results(results_to_write,
-                      lambda x: (x['id'] == str(identifier) and
-                                 x['executable'] == str(executable) and
-                                 x['num_par'] == str(num_par) and 
-                                 x['num_threads'] == str(num_threads)),
-                      results_file)
+    write_results(results_to_write,
+                  lambda x: (x['id'] == str(identifier) and
+                             x['executable'] == str(executable) and
+                             x['num_par'] == str(num_par) and 
+                             x['num_threads'] == str(num_threads)),
+                  results_file)
 
 
 if __name__=="__main__":
