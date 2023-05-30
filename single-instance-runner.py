@@ -41,6 +41,8 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
     resultsDone = False
     threadValue = None
     parValue = None
+    
+    print("Running with", num_threads, "threads and", num_par, "parallel processes")
     with open(results_file, 'r') as file:
          results = csv.DictReader(file)
 
