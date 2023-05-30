@@ -45,20 +45,21 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
     parValue = None
     
     print("Running with", num_threads, "threads and", num_par, "parallel processes")
-    with open(results_file, 'r') as file:
-         results = csv.DictReader(file)
+    try:
+        with open(results_file, 'r') as file:
+            results = csv.DictReader(file)
 
-         for row in results:
-             threadValue = row['num_threads']
-             print("threadValue:", threadValue)
-             parValue = row['num_par']
-             print("parValue:", parValue)
-             if threadValue != 1:
-                 if threadValue == num_threads:
-                     results_done = True
-             if parValue != 1:
-                 if parValue == num_par:
-                     results_done = True
+            for row in results:
+                threadValue = row['num_threads']
+                print("threadValue:", threadValue)
+                parValue = row['num_par']
+                print("parValue:", parValue)
+                if threadValue != 1:
+                    if threadValue == num_threads:
+                        results_done = True
+                if parValue != 1:
+                    if parValue == num_par:
+                        results_done = True
 
     
      
