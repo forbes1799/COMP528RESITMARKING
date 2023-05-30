@@ -70,7 +70,7 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
                       lambda x: (x['id'] == str(identifier) and
                                  x['executable'] == str(executable) and
                                  x['num_par'] == str(num_par) and 
-                                 x['threads'] == str(num_threads)),
+                                 x['num_threads'] == str(num_threads)),
                       results_file)
 
 
