@@ -51,7 +51,7 @@ def submit_job_for_run(exe, threads, identifier, artifacts_path, basedir):
                 if threadValue == threads:
                     resultsDone = True
     except FileNotFoundError:
-	print("File not found")
+        print("File not found")
 
     command_to_run = ["python", os.path.join(artifacts_path, "single-instance-runner.py")]
     command_to_run += ["--num-par", str(threads)]
