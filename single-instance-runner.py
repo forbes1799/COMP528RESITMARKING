@@ -60,8 +60,8 @@ def run(basedir, executable, identifier, results_file, num_par, parallel, args):
                 if parValue != 1:
                     if parValue == num_par:
                         results_done = True
-    except FileNotFoundError:
-      print("File does not exist")
+     except FileNotFoundError:
+       print("File does not exist")
 
     
      
