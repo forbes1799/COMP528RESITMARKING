@@ -1,3 +1,2 @@
-https://www.dropbox.com/s/vgp0bvjp70mds7n/input_64_512_960.dat?dl=1 input_64_512_960.dat
-https://www.dropbox.com/s/hnf6ypnh6z3j6rd/kernel_5.dat?dl=1 kernel_5.dat
-https://www.dropbox.com/s/cszz8mye9p7j0sy/output_64_512_960x5.dat?dl=1 output_64_512_960x5.dat
+https://www.dropbox.com/s/6oejy2k7wb6stld/output_1024_128_2048.dat?dl=1
+https://www.dropbox.com/s/bg1q5n7nkggk0lv/input_1024.dat?dl=1
